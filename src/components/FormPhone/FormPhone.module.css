@@ -1,0 +1,19 @@
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+    border: 2px solid gray;
+    padding: 20px;
+    max-width: 300px;
+}
+
+.btnadd {
+    border-radius: 5px;
+    background-color: rgb(146, 233, 146);
+}
+
+.btnadd:hover,
+.btnadd:focus {
+    background-color: rgb(124, 182, 124);
+}

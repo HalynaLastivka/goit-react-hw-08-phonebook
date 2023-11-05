@@ -1,0 +1,12 @@
+.btndelete {
+    border-radius: 5px;
+    margin-left: 10px;
+    background-color: lemonchiffon;
+}
+
+
+
+.btndelete:hover,
+.btndelete:focus {
+    background-color: blue;
+}
