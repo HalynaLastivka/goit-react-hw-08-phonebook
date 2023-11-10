@@ -9,15 +9,7 @@ import {
   selectAuthAuthenticated,
   selectAuthUserData,
 } from 'redux/auth.selectors';
-import {
-  Box,
-  ButtonGroup,
-  Button,
-  Link as LinkChakra,
-  HStack,
-  Icon,
-  Text,
-} from '@chakra-ui/react';
+import { Box, ButtonGroup, Button, HStack, Icon, Text } from '@chakra-ui/react';
 import { logOutThunk } from 'redux/authReducer';
 
 import { Link } from 'react-router-dom';
