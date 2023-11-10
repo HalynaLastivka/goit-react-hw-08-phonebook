@@ -1,16 +1,15 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-
+import { createAsyncThunk, createSlice, isAnyOf } from '@reduxjs/toolkit';
 import {
   requestAddContact,
+  requestAllContacts,
   requestDeleteContact,
-  requesContacts,
-} from 'services/api';
+} from 'services/phonebookApi';
 
 export const fetchContacts = createAsyncThunk(
-  'contact/getAll',
+  'contacts/getAll',
   async (_, thunkAPI) => {
     try {
-      const contacts = await requesContacts();
+      const contacts = await requestAllContacts();
 
       return contacts;
     } catch (error) {
@@ -20,10 +19,11 @@ export const fetchContacts = createAsyncThunk(
 );
 
 export const addContact = createAsyncThunk(
-  'contact/add',
+  'contacts/add',
   async (newContact, thunkAPI) => {
     try {
       const contact = await requestAddContact(newContact);
+      console.log('contact: ', contact);
 
       return contact;
     } catch (error) {
@@ -33,7 +33,7 @@ export const addContact = createAsyncThunk(
 );
 
 export const deleteContact = createAsyncThunk(
-  'contact/delete',
+  'contacts/delete',
   async (contactId, thunkAPI) => {
     try {
       const deletedContact = await requestDeleteContact(contactId);
@@ -46,15 +46,15 @@ export const deleteContact = createAsyncThunk(
 );
 
 const INITIAL_STATE = {
-  contacts: [],
+  contacts: null,
   isLoading: false,
   error: null,
   filter: '',
 };
 
-const contactSlice = createSlice({
-  // Ім'я слайсу
-  name: 'contactSlice',
+const contactsSlice = createSlice({
+  name: 'contacts',
+
   initialState: INITIAL_STATE,
   reducers: {
     setFilter: (state, action) => {
@@ -63,37 +63,19 @@ const contactSlice = createSlice({
   },
   extraReducers: builder =>
     builder
-      .addCase(fetchContacts.pending, state => {
-        state.isLoading = true;
-        state.error = null;
-      })
       .addCase(fetchContacts.fulfilled, (state, action) => {
         state.isLoading = false;
         state.contacts = action.payload;
       })
-      .addCase(fetchContacts.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload;
-      })
-
-      .addCase(addContact.pending, state => {
-        state.isLoading = true;
-        state.error = null;
-      })
       .addCase(addContact.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.contacts.unshift(action.payload);
+        if (Array.isArray(state.contacts)) {
+          state.contacts.unshift(action.payload);
+        } else {
+          state.contacts = [action.payload];
+        }
         // state.products = [action.payload, ...state.products];
         // state.products.push(action.payload);
-      })
-      .addCase(addContact.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload;
-      })
-
-      .addCase(deleteContact.pending, state => {
-        state.isLoading = true;
-        state.error = null;
       })
       .addCase(deleteContact.fulfilled, (state, action) => {
         state.isLoading = false;
@@ -101,13 +83,30 @@ const contactSlice = createSlice({
           contact => contact.id !== action.payload.id
         );
       })
-      .addCase(deleteContact.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload;
-      }),
+
+      .addMatcher(
+        isAnyOf(
+          fetchContacts.pending,
+          addContact.pending,
+          deleteContact.pending
+        ),
+        state => {
+          state.isLoading = true;
+          state.error = null;
+        }
+      )
+      .addMatcher(
+        isAnyOf(
+          fetchContacts.rejected,
+          addContact.rejected,
+          deleteContact.rejected
+        ),
+        (state, action) => {
+          state.isLoading = false;
+          state.error = action.payload;
+        }
+      ),
 });
 
-// Генератори екшенів
-export const { setFilter } = contactSlice.actions;
-
-export const contactReducer = contactSlice.reducer;
+export const { setFilter } = contactsSlice.actions;
+export const contactReducer = contactsSlice.reducer;

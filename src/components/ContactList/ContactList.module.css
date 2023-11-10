@@ -9,4 +9,5 @@
 .btndelete:hover,
 .btndelete:focus {
     background-color: blue;
+    background-color: rgb(162, 162, 227);
 }
