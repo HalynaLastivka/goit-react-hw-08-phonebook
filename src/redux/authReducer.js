@@ -25,7 +25,6 @@ export const registerThunk = createAsyncThunk(
   async (formData, thunkAPI) => {
     try {
       const authData = await requestRegister(formData);
-
       return authData;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
