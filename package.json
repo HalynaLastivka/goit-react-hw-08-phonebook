@@ -2,7 +2,7 @@
   "name": "react-homework-template",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://HalynaLastivka.github.io/goit-react-hw-08-phonebook/",
+  "homepage": "https://halynalastivka.github.io/goit-react-hw-08-phonebook",
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^2.8.1",
